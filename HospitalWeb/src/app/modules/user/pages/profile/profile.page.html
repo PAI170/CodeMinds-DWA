@@ -1,0 +1,62 @@
+<app-panel *ngIf="user" panelTitle="Actualizar Información">
+    <form (keyup.enter)="saveUser()">
+        <ul>
+            <li class="validation-message" *ngFor="let message of messages">{{message}}</li>
+        </ul>
+        <div class="row">
+            <app-input
+                name="firstName"
+                form="updateProfile"
+                label="Nombre"
+                class="col-3"
+                [type]="InputType.Text"
+                [(model)]="user.firstName"
+                [attributes]="{'placeholder': 'E.g.:John'}">
+            </app-input>
+            <app-input
+                name="lastName"
+                form="updateProfile"
+                label="Apellido"
+                class="col-3"
+                [type]="InputType.Text"
+                [(model)]="user.lastName"
+                [attributes]="{'placeholder': 'E.g.:Smith'}">
+            </app-input>
+            <app-input 
+                name="email"
+                form="updateProfile"
+                label="Correo"
+                class="col-3"
+                [type]="InputType.Email"
+                [(model)]="user.email"
+                [attributes]="{'placeholder': 'E.g.:john.smith@mail.com'}">
+            </app-input>
+            <app-input
+                name="password"
+                form="updateProfile"
+                label="Contraseña"
+                class="col-3"
+                [type]="InputType.Password"
+                [(model)]="password"
+                [attributes]="{'placeholder': 'Ingrese una nueva contraseña si desea cambiarla'}">
+            </app-input>
+            <app-input
+                *ngIf="password"
+                name="confirmPassword"
+                form="updateProfile"
+                label="Confirmar Contraseña"
+                class="col-3"
+                [type]="InputType.Password"
+                [(model)]="confirmPassword"
+                [attributes]="{'placeholder': 'Confirmar nueva contraseña'}">
+            </app-input>
+        </div>
+        <app-button 
+            [type]="ButtonType.Success"
+            [disabled]="saving || !passwordConfirmed"
+            (clicked)="saveUser()">
+            Guardar
+            <i *ngIf="saving" class="material-symbols-sharp rotate">data_saver_off</i>
+        </app-button>
+    </form>
+</app-panel>

@@ -1,0 +1,117 @@
+@import './assets/css/theme.css';
+@import './assets/css/reset.css';
+@import './assets/css/columns.css';
+@import './assets/css/button.css';
+
+html {
+    font-size: 10px;
+    height: 100%;
+}
+
+body {
+	font-size: 1.4rem;
+    line-height: 1.2;
+	font-family: var(--font-main);
+	background: var(--color-background);
+	color: var(--color-text);
+	height: 100%;
+	overflow: hidden;
+}
+
+h1 {
+	font-size: 4rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+}
+
+h2 {
+	font-size: 3.3rem;
+	font-weight: 700;
+	margin-bottom: 0.8rem;
+}
+
+.no-selection {
+    user-select: none;
+}
+
+.rotate {
+    animation: rotate 1s ease-out infinite;
+}
+
+.page {
+    position: relative;
+}
+
+.page-controls {
+    position: absolute;
+    top: 3rem;
+    right: 2rem;
+}
+
+.prompt-text {
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+.prompt-buttons {
+    text-align: right;
+}
+
+.validation-message {
+    margin-bottom: 0.2rem;
+    padding: 0.5rem;
+    background: var(--color-danger-primary);
+    border: var(--color-danger-secondary) 0.1rem solid;
+    border-radius: 0.2rem;
+    color: #fff;
+    animation: fade-in 0.2s ease-out forwards ;
+}
+
+.alert-message {
+    margin-bottom: 0.2rem;
+    padding: 0.5rem;
+    background: var(--color-warning-primary);
+    border: var(--color-warning-secondary) 0.1rem solid;
+    border-radius: 0.2rem;
+    color: #fff;
+    animation: fade-in 0.2s ease-out forwards ;
+}
+
+
+.material-symbols-sharp {
+    vertical-align: text-bottom;
+    font-size: 1.6rem;
+    margin-right: 0.4rem;
+    font-weight: 500;
+}
+
+.material-symbols-sharp:last-child {
+    margin-right: 0;
+}
+
+@keyframes fade-in {
+    0% {
+        opaicty: 0;
+        transform: scale(0)
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotateZ(10deg);
+    }
+
+    80% {
+        transform: rotateZ(340deg);
+    }
+
+    100% {
+        transform: rotateZ(360deg);
+    }
+}

@@ -1,0 +1,35 @@
+<app-panel>
+   <main>
+      <figure>
+         <img src="/assets/img/code-minds.png" alt="Code Minds" />
+      </figure>
+      <form (keyup.enter)="login()">
+         <ul>
+            <li class="validation-message" *ngFor="let message of messages">{{message}}</li>
+         </ul>
+         <app-input 
+            name="username"
+            form="login"
+            label="Usuario"
+            [type]="InputType.Text"
+            [(model)]="email"
+            [attributes]="{'placeholder': 'E.g.: jsmith'}">
+         </app-input>
+         <app-input 
+            name="password"
+            form="login"
+            label="Contraseña"
+            [type]="InputType.Password"
+            [(model)]="password"
+            [attributes]="{'placeholder': 'E.g.: P@ssw0rd123'}">
+         </app-input>
+         <app-button 
+            [type]="ButtonType.Success"
+            [disabled]="loading"
+            (clicked)="login()">
+            Ingresar
+            <i *ngIf="loading" class="material-symbols-sharp rotate">data_saver_off</i>
+         </app-button>
+      </form>
+   </main>
+</app-panel>

@@ -1,0 +1,216 @@
+<!-- Controles de página -->
+<!-- Sintaxis para obsevables con async pipes -->
+<div *ngIf="(user$ | async) as user" class="page-controls">
+    <button *ngIf="canEdit(user)" class="button success" (click)="insertUpdate()">
+        <i class="material-symbols-sharp">add_circle</i>
+        <span>Agregar</span>
+    </button>
+</div>
+
+<!-- Filtro de búsqueda -->
+<app-panel class="unboxed slim" panelTitle="Búsqueda" [(open)]="panelOpen" [expandable]="true">
+    <form class="row" (keyup.enter)="list()">
+        <app-input 
+            name="documentId" 
+            form="filter" 
+            label="Cédula"
+            class="col-3"
+            [type]="InputType.Text" 
+            [(model)]="filter.documentId"
+            [attributes]="{'placeholder': 'E.g.:123456789'}">
+        </app-input>
+        <app-input 
+            name="firstName" 
+            form="filter" 
+            label="Nombre"
+            class="col-3"
+            [type]="InputType.Text" 
+            [(model)]="filter.firstName"
+            [attributes]="{'placeholder': 'E.g.:John'}">
+        </app-input>
+        <app-input 
+            name="lastName" 
+            form="filter" 
+            label="Apellido"
+            class="col-3"
+            [type]="InputType.Text" 
+            [(model)]="filter.lastName"
+            [attributes]="{'placeholder': 'E.g.:Smith'}">
+        </app-input>
+        <app-date 
+            name="birthDateFrom" 
+            form="filter" 
+            label="Desde"
+            class="col-3"
+            [type]="DateType.DateTime"
+            [(model)]="filter.birthDateFrom">
+        </app-date>
+        <app-date 
+            name="birthDateTo" 
+            form="filter" 
+            label="Hasta"
+            class="col-3"
+            [type]="DateType.DateTime"
+            [(model)]="filter.birthDateTo">
+        </app-date>
+        <app-select
+            name="gender"
+            form="filter"
+            label="Género"
+            class="col-3"
+            nullOption="Todos"
+            [(model)]="filter.genderId"
+            [options]="genders"
+            [option]="{label: 'name', value: 'id', output: 'id'}">
+        </app-select>
+        <app-button 
+            [type]="ButtonType.Success" 
+            [disabled]="loading"
+            (clicked)="list()">
+            <i class="material-symbols-sharp">search</i>
+            <span>Buscar</span>
+        </app-button>
+    </form>
+</app-panel>
+
+<!--- Tabla de resultados -->
+<!-- Sintaxis para obsevables con async pipes -->
+<app-panel *ngIf="(user$ | async) as user" class="slim">
+    <app-table 
+        [headers]="[{ label: 'Cédula' },
+                    { label: 'Nombre', size: 2 },
+                    { label: 'Nacimiento', size: 2 },
+                    { label: 'Género', size: 0.75 },
+                    { size: 2 }]" 
+        [template]="patientRow" 
+        [templateMobile]="patientRowMobile" 
+        [source]="patients"
+        [loading]="loading"
+        noResultsText="No se han encontrado resultados">
+        <ng-template #patientRow let-patient>
+            <td>{{patient.documentId}}</td>
+            <td>{{patient.firstName}} {{patient.lastName}}</td>
+            <td>{{patient.birthDate.toLocaleDisplayString('es-US')}}</td>
+            <td>{{patient.gender.name}}</td>    
+            <td class="buttons">
+                <ng-container *ngIf="canEdit(user)">
+                    <button class="button success" (click)="insertUpdate(patient)">
+                        <i class="material-symbols-sharp">edit</i>
+                        <span>Editar</span>
+                    </button>
+                    <button class="button danger" (click)="deleteId = patient.id">
+                        <i class="material-symbols-sharp">delete</i>
+                        <span>Borrar</span>
+                    </button>
+                </ng-container>
+            </td>
+        </ng-template>
+        <ng-template #patientRowMobile let-patient>
+            <h3 class="heading">{{patient.documentId}}</h3>
+            <p class="data">
+                <span class="label">Nombre:</span> 
+                <span>{{patient.firstName}} {{patient.lastName}}</span>
+            </p>
+            <p class="data">
+                <span class="label">Nacimiento:</span> 
+                <span>{{patient.birthDate.toLocaleDisplayString('es-US')}}</span>
+            </p>
+            <p class="data">
+                <span class="label">Género:</span> 
+                <span>{{patient.gender.name}}</span>
+            </p>
+            <div class="buttons" *ngIf="canEdit(user)">
+                <button class="button success" (click)="insertUpdate(patient)">
+                    <i class="material-symbols-sharp">edit</i>
+                    <span>Editar</span>
+                </button>
+                <button class="button danger" (click)="deleteId = patient.id">
+                    <i class="material-symbols-sharp">delete</i>
+                    <span>Borrar</span>
+                </button>
+            </div>
+        </ng-template>
+    </app-table>
+</app-panel>
+
+<!-- Modal de creación/edición -->
+<app-modal 
+    [(open)]="modalOpen"
+    [modalTitle]="modalTitle"
+    [position]="ModalPosition.Top"
+    [size]="ModalSize.Medium"
+    (onClose)="onModalClose()">
+    <form *ngIf="patient" (keyup.enter)="savePatient()">
+        <ul>
+            <li class="validation-message" *ngFor="let message of messages">{{message}}</li>
+        </ul>
+        <app-input 
+            name="documentId" 
+            form="insertUpdate" 
+            label="Cédula"
+            [type]="InputType.Text" 
+            [(model)]="patient.documentId"
+            [attributes]="{'placeholder': 'E.g.:123456789'}">
+        </app-input>
+        <app-input 
+            name="firstName" 
+            form="insertUpdate" 
+            label="Nombre"
+            [type]="InputType.Text" 
+            [(model)]="patient.firstName"
+            [attributes]="{'placeholder': 'E.g.:John'}">
+        </app-input>
+        <app-input 
+            name="lastName" 
+            form="insertUpdate" 
+            label="Apellido"
+            [type]="InputType.Text" 
+            [(model)]="patient.lastName"
+            [attributes]="{'placeholder': 'E.g.:Smith'}">
+        </app-input>
+        <app-date 
+            name="birthDate" 
+            form="insertUpdate" 
+            label="Nacimiento"
+            [type]="DateType.DateTime"
+            [(model)]="patient.birthDate">
+        </app-date>
+        <app-select
+            name="gender"
+            form="insertUpdate"
+            label="Género"
+            [(model)]="patient.gender"
+            [options]="genders"
+            [option]="{label: 'name', value: 'id', compare: 'id'}">
+        </app-select>
+        <div class="row">
+            <app-button 
+                [type]="ButtonType.Success"
+                [disabled]="saving || !modalOpen"
+                (clicked)="savePatient()">
+                Guardar
+                <i *ngIf="saving" class="material-symbols-sharp rotate">data_saver_off</i>
+            </app-button>
+            <app-button [type]="ButtonType.Danger" (clicked)="modalOpen = false">Cancelar</app-button>
+        </div>
+    </form>
+</app-modal>
+
+<!-- Modal de confirmación de eliminación -->
+<app-modal
+    [open]="confirmDelete"
+    [transparent]="true"
+    [position]="ModalPosition.Top"
+    [closeOnClickOutside]="false">
+    <p class="prompt-text">Está seguro que desea eliminar este récord?</p>
+    <div class="prompt-buttons">
+        <button
+            class="button danger"
+            [disabled]="saving || !confirmDelete"
+            (click)="deletePatient()">
+            Eliminar
+            <i *ngIf="saving" class="material-symbols-sharp rotate">data_saver_off</i>
+        </button>
+        <button class="button neutral" (click)="deleteId = null">Cancelar</button>
+    </div>
+</app-modal>
